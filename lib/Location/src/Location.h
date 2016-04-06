@@ -9,7 +9,7 @@ public:
   Location(void);
   ~Location(void);
   void update (void);
-  void pushData (void);
+  void pushData (uint8_t data);
   int  getXpos (void);
   int  getYpos (void);
 
@@ -19,6 +19,7 @@ private:
   uint8_t data[12];
   int Xpos;
   int Ypos;
+  bool searchHeaderRequired;
 
 };
 

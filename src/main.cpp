@@ -1,10 +1,14 @@
 #include "Arduino.h"
 #include "DueTimer.h"
 #include "MadgwickAHRS.h"
-#include "Servo.h"
+#include "Steering.h"
 
 DueTimer gyroTimer = DueTimer(1);
 DueTimer controlTimer = DueTimer(6);
+
+Steering steering = Steering( 90.0f , 0.0f );
+
+float gx, gy, gz, ax, ay, az;
 
 void gyroSensing(void);
 void controlVehicle(void);
@@ -27,7 +31,8 @@ void loop(){
 }
 
 void gyroSensing(void){
-
+  
+  MadgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az);
 }
 
 void controlVehicle(void){
