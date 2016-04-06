@@ -3,12 +3,14 @@
 #include "MadgwickAHRS.h"
 #include "Steering.h"
 #include "Location.h"
+#include "Motor.h"
 
 DueTimer gyroTimer = DueTimer(1);
 DueTimer controlTimer = DueTimer(6);
 
 Steering steering = Steering( 90.0f , 0.0f );
 Location location = Location();
+Motor dc = Motor(2,3);
 
 float gx, gy, gz, ax, ay, az;
 
@@ -24,6 +26,7 @@ void setup(){
   Serial2.begin(115200);
 
   pinMode(LED_BUILTIN, OUTPUT);
+
 }
 
 void loop(){
