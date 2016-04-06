@@ -16,7 +16,10 @@ Motor dc = Motor(2,3);
 
 MPU6050 accelgyro;
 
-float gx, gy, gz, ax, ay, az;
+int16_t gx, gy, gz, ax, ay, az;
+float gx_rad, gy_rad, gz_rad, ax_ms2, ay_ms2, az_ms2;
+float scaleGyro = (2.0f * PI * 250.0f / 360.0f) / 16384.0f;
+float scaleAccel = (2.0f * 9.8f) / 16384.0f;
 
 void gyroSensing(void);
 void controlVehicle(void);
@@ -33,7 +36,6 @@ void setup(){
   gyroTimer.attachInterrupt(gyroSensing).start(2000);
   controlTimer.attachInterrupt(controlVehicle).start(5000);
 
-
 }
 
 void loop(){
@@ -43,8 +45,18 @@ void loop(){
 }
 
 void gyroSensing(void){
+  accelgyro.getMotion6(&ax, &ay, &ax, &gx, &gy, &gz);
 
-  MadgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az);
+  gx_rad = scaleGyro * gx;
+  gy_rad = scaleGyro * gy;
+  gz_rad = scaleGyro * gz;
+
+  ax_ms2 = scaleAccel * ax;
+  ay_ms2 = scaleAccel * ay;
+  az_ms2 = scaleAccel * az;
+
+  MadgwickAHRSupdateIMU(gx_rad, gy_rad, gz_rad, ax_ms2, ay_ms2, az_ms2);
+
 }
 
 void controlVehicle(void){
