@@ -25,6 +25,7 @@
 				  neither be accessible by Timer0,...
 */
 // #define USING_SERVO_LIB	true
+#define USING_SERVO_LIB
 
 #ifdef USING_SERVO_LIB
 	#warning "HEY! You have set flag USING_SERVO_LIB. Timer0, 2,3,4 and 5 are not available"
