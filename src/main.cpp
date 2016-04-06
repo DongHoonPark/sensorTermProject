@@ -6,7 +6,8 @@ DueTimer gyroTimer = DueTimer(1);
 DueTimer controlTimer = DueTimer(6);
 
 void setup(){
-  gyroTimer.setFrequency(200);
+  gyroTimer.setFrequency(500);
+  controlTimer.setFrequency(200);
   Serial.begin(115200);
   Serial2.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
