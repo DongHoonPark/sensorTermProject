@@ -20,6 +20,8 @@ private:
   int Xpos;
   int Ypos;
   bool searchHeaderRequired;
+  int Xpos_previous;
+  int Ypos_previous;
 
 };
 
