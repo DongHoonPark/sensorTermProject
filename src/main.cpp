@@ -2,11 +2,13 @@
 #include "DueTimer.h"
 #include "MadgwickAHRS.h"
 #include "Steering.h"
+#include "Location.h"
 
 DueTimer gyroTimer = DueTimer(1);
 DueTimer controlTimer = DueTimer(6);
 
 Steering steering = Steering( 90.0f , 0.0f );
+Location location = Location();
 
 float gx, gy, gz, ax, ay, az;
 
@@ -26,15 +28,16 @@ void setup(){
 
 void loop(){
   while(Serial2.available()){
-
+    location.pushData(Serial2.read());
   }
 }
 
 void gyroSensing(void){
-  
+
   MadgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az);
 }
 
 void controlVehicle(void){
-
+  location.update();
+  /* and there will be more control code*/
 }
