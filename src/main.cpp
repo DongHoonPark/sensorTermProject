@@ -15,5 +15,6 @@ void setup(){
 void loop(){
   while(Serial2.available()){
     Serial.println(Serial2.read(), HEX);
+
   }
 }
