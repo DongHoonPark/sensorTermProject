@@ -37,7 +37,7 @@ void setup(){
 
   pinMode(LED_BUILTIN, OUTPUT);
 
-  gyroTimer.attachInterrupt(gyroSensing).start(2000);
+  gyroTimer.attachInterrupt(gyroSensing).start(2500);
   controlTimer.attachInterrupt(controlVehicle).start(50000);
 
 }
@@ -65,6 +65,7 @@ void gyroSensing(void){
 
   MadgwickAHRSupdateIMU(gx_rad, gy_rad, gz_rad, ax_ms2, ay_ms2, az_ms2);
   ea.updateQuaternion(q0, q1, q2, q3);
+  
 }
 
 void controlVehicle(void){
