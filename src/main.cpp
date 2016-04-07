@@ -39,12 +39,15 @@ void setup(){
 }
 
 void loop(){
+
   while(Serial2.available()){
     location.pushData(Serial2.read());
   }
+
 }
 
 void gyroSensing(void){
+
   accelgyro.getMotion6(&ax, &ay, &ax, &gx, &gy, &gz);
 
   gx_rad = scaleGyro * gx;
@@ -60,6 +63,7 @@ void gyroSensing(void){
 }
 
 void controlVehicle(void){
+
   location.update();
   /* and there will be more control code*/
 
@@ -69,4 +73,5 @@ void controlVehicle(void){
   Serial.print("y pos : ");
   Serial.print(location.getYpos());
   Serial.print("\n");
+
 }
