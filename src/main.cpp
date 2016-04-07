@@ -62,4 +62,11 @@ void gyroSensing(void){
 void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
+
+  Serial.print("x pos : ");
+  Serial.print(location.getXpos());
+  Serial.print("\t");
+  Serial.print("y pos : ");
+  Serial.print(location.getYpos());
+  Serial.print("\n");
 }
