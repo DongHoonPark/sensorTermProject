@@ -7,6 +7,8 @@
 #include "I2Cdev.h"
 #include "MPU6050.h"
 
+#define DEBUG_MSG_ON
+
 DueTimer gyroTimer = DueTimer(1);
 DueTimer controlTimer = DueTimer(6);
 
@@ -35,8 +37,6 @@ void setup(){
 
   gyroTimer.attachInterrupt(gyroSensing).start(2000);
   controlTimer.attachInterrupt(controlVehicle).start(50000);
-
-
 
 }
 
@@ -70,11 +70,15 @@ void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
 
+  #ifdef DEBUG_MSG_ON
+
   Serial.print("x : ");
   Serial.print(location.getXpos());
   Serial.print("\t");
   Serial.print("y : ");
   Serial.print(location.getYpos());
   Serial.print("\n");
+
+  #endif
 
 }
