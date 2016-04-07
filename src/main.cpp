@@ -6,6 +6,7 @@
 #include "Motor.h"
 #include "I2Cdev.h"
 #include "MPU6050.h"
+#include "EulerAngle.h"
 
 #define DEBUG_MSG_ON
 
@@ -15,6 +16,7 @@ DueTimer controlTimer = DueTimer(6);
 Steering steering = Steering( 90.0f , 0.0f );
 Location location = Location();
 Motor dc = Motor(2,3);
+EulerAngle ea = EulerAngle();
 
 MPU6050 accelgyro;
 
@@ -62,7 +64,7 @@ void gyroSensing(void){
   az_ms2 = scaleAccel * az;
 
   MadgwickAHRSupdateIMU(gx_rad, gy_rad, gz_rad, ax_ms2, ay_ms2, az_ms2);
-
+  ea.updateQuaternion(q0, q1, q2, q3);
 }
 
 void controlVehicle(void){
@@ -70,7 +72,7 @@ void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
 
-  
+
 
   #ifdef DEBUG_MSG_ON
 
