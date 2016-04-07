@@ -1,6 +1,8 @@
 #ifndef EULER_ANGLE_H_
 #define EULER_ANGLE_H_
 
+#include "Arduino.h"
+
 class EulerAngle{
 public:
   EulerAngle();
