@@ -70,6 +70,8 @@ void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
 
+  
+
   #ifdef DEBUG_MSG_ON
 
   Serial.print("x : ");
