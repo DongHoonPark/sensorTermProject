@@ -34,14 +34,17 @@ void setup(){
   pinMode(LED_BUILTIN, OUTPUT);
 
   gyroTimer.attachInterrupt(gyroSensing).start(2000);
-  controlTimer.attachInterrupt(controlVehicle).start(5000);
+  controlTimer.attachInterrupt(controlVehicle).start(50000);
+
+
 
 }
 
 void loop(){
 
   while(Serial2.available()){
-    location.pushData(Serial2.read());
+    char buf  = Serial2.read();
+    location.pushData(buf);
   }
 
 }
@@ -67,10 +70,10 @@ void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
 
-  Serial.print("x pos : ");
+  Serial.print("x : ");
   Serial.print(location.getXpos());
   Serial.print("\t");
-  Serial.print("y pos : ");
+  Serial.print("y : ");
   Serial.print(location.getYpos());
   Serial.print("\n");
 

@@ -33,7 +33,9 @@ void Location::pushData(uint8_t data_input){
     dataBufferIndex++;
     if(dataBufferIndex == 12){
       if(dataBuffer[0] == 0x4D){
-        memcpy(dataBuffer, data, 12);
+        for(int i=0; i<12; i++){
+          data[i] = dataBuffer[i];
+        }
         dataBufferIndex = 0;
       }
       else{
@@ -46,10 +48,7 @@ void Location::pushData(uint8_t data_input){
 }
 
 void Location::update(){
-  if( (data[0]==0x4D)
-  &&(data[1]==0x00)
-  &&(data[2]==0x00)
-  &&(data[3]==0x00) ){
+  if( (data[0]==0x4D)){
     //maybe more error situation can occur...
     uint32_t XposRead = ((uint32_t)data[4]<<24)|((uint32_t)data[5]<<16)|((uint32_t)data[6]<<8)|((uint32_t)data[7]);
     uint32_t YposRead = ((uint32_t)data[8]<<24)|((uint32_t)data[9]<<16)|((uint32_t)data[10]<<8)|((uint32_t)data[11]);
