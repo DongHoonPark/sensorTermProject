@@ -31,21 +31,22 @@ void controlVehicle(void);
 void setup(){
 
   Serial.begin(115200);
-  Serial2.begin(115200);
+  Serial3.begin(115200);
 
-  accelgyro.initialize();
+//  accelgyro.initialize();
 
   pinMode(LED_BUILTIN, OUTPUT);
 
-  gyroTimer.attachInterrupt(gyroSensing).start(2500);
+  //gyroTimer.attachInterrupt(gyroSensing).start(2500);
   controlTimer.attachInterrupt(controlVehicle).start(50000);
 
 }
 
 void loop(){
 
-  while(Serial2.available()){
-    char buf  = Serial2.read();
+  while(Serial3.available()){
+    char buf  = Serial3.read();
+
     location.pushData(buf);
   }
 
@@ -65,15 +66,13 @@ void gyroSensing(void){
 
   MadgwickAHRSupdateIMU(gx_rad, gy_rad, gz_rad, ax_ms2, ay_ms2, az_ms2);
   ea.updateQuaternion(q0, q1, q2, q3);
-  
+
 }
 
 void controlVehicle(void){
 
   location.update();
   /* and there will be more control code*/
-
-
 
   #ifdef DEBUG_MSG_ON
 
