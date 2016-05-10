@@ -74,6 +74,80 @@ void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
 
+//-----------------------------------------------------------------------
+if (location.getXpos()<10000){
+  if (location.getYpos()<20000){
+    if (2*location.getXpos()+location.getYpos()<30000){
+      //steering left
+    }
+    else{
+      //steering right
+    }
+  }
+  else if (20000<=location.getYpos() && location.getYpos()<78700){
+    if (location.getXpos()<5000){
+      //steering left
+    }
+    else{
+      //steering right
+    }
+  }
+  else{
+    if (location.getYpos()-2*location.getXpos()<68700){
+      //steering right
+    }
+    else{
+      //steering left
+    }
+  }
+}
+else if (10000<=location.getXpos() && location.getXpos()<17200){
+  if (location.getYpos()<20000){
+    if (location.getYpos()<10000){
+      //steering left
+    }
+    else{
+      //steering right
+    }
+  }
+  else if (78700<location.getYpos()){
+    if (location.getYpos()<88700){
+      //steering right
+    }
+    else{
+      //steering left
+    }
+  }
+}
+else{
+  if (location.getYpos()<20000){
+    if (2*location.getXpos()-location.getYpos()<24400){
+      //steering right
+    }
+    else{
+      //steering left
+    }
+  }
+  else if(20000<=location.getYpos() && location.getYpos()<78700){
+    if (location.getXpos()<22200){
+      //steering right
+    }
+    else{
+      //steering left
+    }
+  }
+  else{
+    if (2*location.getXpos()+location.getYpos()<123100){
+      //steering right
+    }
+    else{
+      //steering left
+    }
+  }
+}
+//-----------------------------------------------------------------------
+//steering.setDirection(0);
+//steering test
   #ifdef DEBUG_MSG_ON
 
   Serial.print("x : ");
@@ -84,5 +158,5 @@ void controlVehicle(void){
   Serial.print("\n");
 
   #endif
-
+//debug
 }
