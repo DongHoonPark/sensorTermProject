@@ -18,6 +18,7 @@ Steering steering = Steering( 90.0f , 0.0f );
 Location location = Location();
 Motor dc = Motor(2,3);
 EulerAngle ea = EulerAngle();
+CourseVector coursevector = CourseVector(10000,20000,17200,78700,5000); //new course
 
 MPU6050 accelgyro;
 
@@ -41,7 +42,6 @@ void setup(){
 
   //gyroTimer.attachInterrupt(gyroSensing).start(2500);
   controlTimer.attachInterrupt(controlVehicle).start(50000); //real test 50000 -> 20000
-
 }
 
 void loop(){
@@ -76,7 +76,7 @@ void controlVehicle(void){
 
   location.update();
   /* and there will be more control code*/
-
+  //coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos());
 
   #ifdef DEBUG_MSG_ON
 
@@ -85,6 +85,8 @@ void controlVehicle(void){
   Serial.print("\t");
   Serial.print("y : ");
   Serial.print(location.getYpos());
+  Serial.print("\t");
+  Serial.print(coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos()));
   Serial.print("\n");
 
   #endif
