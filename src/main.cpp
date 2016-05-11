@@ -32,6 +32,7 @@ void setup(){
 
   Serial.begin(115200);
   Serial3.begin(115200);
+  steering.attach(8);
 
 //  accelgyro.initialize();
 
@@ -46,8 +47,9 @@ void loop(){
 
   while(Serial3.available()){
     char buf  = Serial3.read();
-
+    //Serial.println(buf,HEX);
     location.pushData(buf);
+
   }
 
 }
@@ -74,9 +76,9 @@ void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
 
-dc.setSpeed(1.0f);
+//dc.setSpeed(1.0f);
 //simple move
-//-----------------------------------------------------------------------
+/*
 if (location.getXpos()<10000){
   if (location.getYpos()<20000){
     if (2*location.getXpos()+location.getYpos()<30000){
@@ -163,7 +165,7 @@ else{
     }
   }
 }
-//-----------------------------------------------------------------------
+*/
   #ifdef DEBUG_MSG_ON
 
   Serial.print("x : ");
