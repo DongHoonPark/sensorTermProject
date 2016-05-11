@@ -7,8 +7,9 @@
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include "EulerAngle.h"
+#include "CourseVector.h"
 
-#define DEBUG_MSG_ON
+#define DEBUG_MSG_ON //debug message switch
 
 DueTimer gyroTimer = DueTimer(1);
 DueTimer controlTimer = DueTimer(6);
@@ -39,7 +40,7 @@ void setup(){
   pinMode(LED_BUILTIN, OUTPUT);
 
   //gyroTimer.attachInterrupt(gyroSensing).start(2500);
-  controlTimer.attachInterrupt(controlVehicle).start(50000);
+  controlTimer.attachInterrupt(controlVehicle).start(50000); //real test 50000 -> 20000
 
 }
 
@@ -76,96 +77,7 @@ void controlVehicle(void){
   location.update();
   /* and there will be more control code*/
 
-//dc.setSpeed(1.0f);
-//simple move
-/*
-if (location.getXpos()<10000){
-  if (location.getYpos()<20000){
-    if (2*location.getXpos()+location.getYpos()<30000){
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-    else{
-      steering.setDirection(1.0f);
-      //steering right
-    }
-  }
-  else if (20000<=location.getYpos() && location.getYpos()<78700){
-    if (location.getXpos()<5000){
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-    else{
-      steering.setDirection(-1.0f);
-      //steering right
-    }
-  }
-  else{
-    if (location.getYpos()-2*location.getXpos()<68700){
-      steering.setDirection(-1.0f);
-      //steering right
-    }
-    else{
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-  }
-}
-else if (10000<=location.getXpos() && location.getXpos()<17200){
-  if (location.getYpos()<20000){
-    if (location.getYpos()<10000){
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-    else{
-      steering.setDirection(-1.0f);
-      //steering right
-    }
-  }
-  else if (78700<location.getYpos()){
-    if (location.getYpos()<88700){
-      steering.setDirection(-1.0f);
-      //steering right
-    }
-    else{
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-  }
-}
-else{
-  if (location.getYpos()<20000){
-    if (2*location.getXpos()-location.getYpos()<24400){
-      steering.setDirection(-1.0f);
-      //steering right
-    }
-    else{
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-  }
-  else if(20000<=location.getYpos() && location.getYpos()<78700){
-    if (location.getXpos()<22200){
-      steering.setDirection(-1.0f);
-      //steering right
-    }
-    else{
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-  }
-  else{
-    if (2*location.getXpos()+location.getYpos()<123100){
-      steering.setDirection(-1.0f);
-      //steering right
-    }
-    else{
-      steering.setDirection(-1.0f);
-      //steering left
-    }
-  }
-}
-*/
+
   #ifdef DEBUG_MSG_ON
 
   Serial.print("x : ");
