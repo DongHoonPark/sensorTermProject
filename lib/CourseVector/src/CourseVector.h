@@ -4,7 +4,7 @@
 1     2     3
  x1y1   x2y1
 4     5     6
- x1y2   x2y2 
+ x1y2   x2y2
 7     8     9
 */
 
@@ -16,6 +16,7 @@ public:
 	~CourseVector();
 	void setPoints(int x1, int y1, int x2, int y2, int r);
 	float getDistanceFromCourse(int x, int y);
+	int sector;
 private:
 	void determineSector(int x, int y);
 	float getDistanceFromPole(int x, int y);
@@ -24,6 +25,5 @@ private:
 	int x_pole[2];
 	int y_pole[2];
 	int r;
-	int sector;
+	//int sector;
 };
-
