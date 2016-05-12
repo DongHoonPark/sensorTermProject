@@ -18,7 +18,7 @@ Steering steering = Steering( 170.0f , 10.0f );
 Location location = Location();
 Motor dc = Motor(3,2);
 EulerAngle ea = EulerAngle();
-CourseVector coursevector = CourseVector(10000,20000,17200,78700,5000); //new course
+CourseVector coursevector = CourseVector(11000,21000,16200,77700,6000); //new course
 
 MPU6050 accelgyro;
 
@@ -30,10 +30,11 @@ int nowXvalue;
 int nowYvalue;
 int errorvalue;
 int nowvector;
+float svalue;
 
 float dt = 0.02f;
-float Kp = 0.6f;
-float Ki = 0.03f;
+float Kp = 0.55f;
+float Ki = 0.1f;
 float Kp_v = 0.0f;
 float Ki_v = 0.0f;
 float error_int = 0.0f;
@@ -51,9 +52,9 @@ void setup(){
    pastYvalue = 0;
    nowXvalue = 0;
    nowYvalue = 0;
-   errorvalue = 10000;
+   errorvalue = 7000;
    nowvector = 0;
-
+   svalue = 0.0f;
   Serial.begin(115200);
   Serial3.begin(115200);
   steering.attach(8);
@@ -70,7 +71,7 @@ void loop(){
 
     while(Serial3.available()){
     char buf  = Serial3.read();
-    Serial.println(buf,HEX);
+    //Serial.println(buf,HEX);
     location.pushData(buf);
 
   }
@@ -104,13 +105,16 @@ void controlVehicle(void){
       pastXvalue = location.getXpos();
       nowXvalue = location.getXpos();
     }
+
     else{
       if((abs(location.getXpos()-pastXvalue)) >= errorvalue){
         nowXvalue = pastXvalue;
+        svalue = 0.25f;
       }
       else{
         nowXvalue = location.getXpos();
         pastXvalue = location.getXpos();
+        svalue = 0.4f;
       }
     }
   }
@@ -122,32 +126,37 @@ void controlVehicle(void){
     else{
       if((abs(location.getYpos()-pastYvalue)) >= errorvalue){
         nowYvalue = pastYvalue;
+        svalue = 0.25f;
       }
       else{
         nowYvalue = location.getYpos();
         pastYvalue = location.getYpos();
+        svalue = 0.4f;
       }
     }
   }
   /*Filter End*/
-  //nowvector = coursevector.getDistanceFromCourse(nowXvalue, nowYvalue);
-  nowvector = coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos());
+  nowvector = coursevector.getDistanceFromCourse(nowXvalue, nowYvalue);
+  //nowvector = coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos());
   /*moving action*/
   if (nowXvalue != 0){
     //steering.setDirection((-0.7*(float(nowvector))/2500.0f));
     Kp_v = Kp * float(nowvector);
     error_int += float(nowvector) * dt;
     if(error_int > 300){
-      error_int = 0;
+      error_int = 300;
     }
     steering.setDirection((Kp_v+(Ki* error_int))/2000.0f);
     if (coursevector.sector == 1 || coursevector.sector == 3 || coursevector.sector == 7 || coursevector.sector == 9){
     //steering.setDirection(-(Kp_v+(Ki* error_int))/2000.0f);
-    //dc.setSpeed(0.2f);
+    dc.setSpeed(svalue - 0.08f);
+    }
+    else if(coursevector.sector == 2 || coursevector.sector == 8){
+      dc.setSpeed(svalue - 0.05f);
     }
     else{
     //steering.setDirection((Kp_v+(Ki* error_int))/2000.0f);
-    //dc.setSpeed(0.3f);
+    dc.setSpeed(svalue);
     }
   }
 
@@ -155,12 +164,12 @@ void controlVehicle(void){
   #ifdef DEBUG_MSG_ON
 
   Serial.print("x : ");
-  Serial.print(location.getXpos());
-  //Serial.print(nowXvalue);
+  //Serial.print(location.getXpos());
+  Serial.print(nowXvalue);
   Serial.print("\t");
   Serial.print("y :");
-  Serial.print(location.getYpos());
-  //Serial.print(nowYvalue);
+  //Serial.print(location.getYpos());
+  Serial.print(nowYvalue);
   Serial.print("\t");
   //Serial.print(coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos()));
   //Serial.print(coursevector.getDistanceFromCourse(nowXvalue, nowYvalue));
