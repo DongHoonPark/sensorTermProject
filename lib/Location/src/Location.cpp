@@ -23,6 +23,7 @@ void Location::pushData(uint8_t data_input){
     if(data_input == 0x4D){
       dataBuffer[0] = data_input;
       dataBufferIndex = 1;
+      searchHeaderRequired = false;
     }
     else{
       dataBufferIndex = 0;
