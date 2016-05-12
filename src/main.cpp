@@ -23,6 +23,14 @@ CourseVector coursevector = CourseVector(10000,20000,17200,78700,5000); //new co
 MPU6050 accelgyro;
 
 int16_t gx, gy, gz, ax, ay, az;
+
+int pastXvalue = 0;
+int pastYvalue = 0;
+int nowXvalue = 0;
+int nowYvalue = 0;
+int errorvalue = 3000;
+int nowvector = 0;
+
 float gx_rad, gy_rad, gz_rad, ax_ms2, ay_ms2, az_ms2;
 float scaleGyro = (2.0f * PI * 250.0f / 360.0f) / 32768.0f;
 float scaleAccel = (2.0f * 9.8f) / 32768.0f;
@@ -76,17 +84,54 @@ void controlVehicle(void){
 
   location.update();
   /* and there will be more control code*/
-  //coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos());
+
+  /*Do Filter*/
+  if (location.getXpos() != 0){
+    if (pastXvalue == 0){
+      pastXvalue = location.getXpos();
+      nowXvalue = location.getXpos();
+    }
+    else{
+      if((abs(location.getXpos()-pastXvalue)) >= errorvalue){
+        nowXvalue = pastXvalue;
+      }
+      else{
+        nowXvalue = location.getXpos();
+        pastXvalue = location.getXpos();
+      }
+    }
+  }
+  if (location.getYpos() != 0){
+    if (pastYvalue == 0){
+      pastYvalue = location.getYpos();
+      nowYvalue = location.getYpos();
+    }
+    else{
+      if((abs(location.getYpos()-pastYvalue)) >= errorvalue){
+        nowYvalue = pastYvalue;
+      }
+      else{
+        nowYvalue = location.getYpos();
+        pastYvalue = location.getYpos();
+      }
+    }
+  }
+  /*Filter End*/
+  nowvector = coursevector.getDistanceFromCourse(nowXvalue, nowYvalue);
 
   #ifdef DEBUG_MSG_ON
 
   Serial.print("x : ");
-  Serial.print(location.getXpos());
+  //Serial.print(location.getXpos());
+  Serial.print(nowXvalue);
   Serial.print("\t");
   Serial.print("y : ");
-  Serial.print(location.getYpos());
+  //Serial.print(location.getYpos());
+  Serial.print(nowYvalue);
   Serial.print("\t");
-  Serial.print(coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos()));
+  //Serial.print(coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos()));
+  //Serial.print(coursevector.getDistanceFromCourse(nowXvalue, nowYvalue));
+  Serial.print(nowvector);
   Serial.print("\n");
 
   #endif
