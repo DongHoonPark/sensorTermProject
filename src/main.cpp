@@ -8,6 +8,7 @@
 #include "MPU6050.h"
 #include "EulerAngle.h"
 #include "CourseVector.h"
+#include "Filter.h"
 
 #define DEBUG_MSG_ON //debug message switch
 
@@ -19,16 +20,13 @@ Location location = Location();
 Motor dc = Motor(3,2);
 EulerAngle ea = EulerAngle();
 CourseVector coursevector = CourseVector(11000,21000,16200,77700,6000); //new course
+Filter filterx = Filter();
+Filter filtery = Filter();
 
 MPU6050 accelgyro;
 
 int16_t gx, gy, gz, ax, ay, az;
 
-int pastXvalue;
-int pastYvalue;
-int nowXvalue;
-int nowYvalue;
-int errorvalue;
 int nowvector;
 float svalue;
 
@@ -48,13 +46,11 @@ void controlVehicle(void);
 
 void setup(){
 
-   pastXvalue = 0;
-   pastYvalue = 0;
-   nowXvalue = 0;
-   nowYvalue = 0;
-   errorvalue = 7000;
    nowvector = 0;
    svalue = 0.0f;
+
+  filterx.setsimplefiltererror(7000);
+  filtery.setsimplefiltererror(7000);
   Serial.begin(115200);
   Serial3.begin(115200);
   steering.attach(8);
@@ -99,46 +95,10 @@ void controlVehicle(void){
 
   location.update();
   /* and there will be more control code*/
-  /*Do Filter*/
-  if (location.getXpos() != 0){
-    if (pastXvalue == 0){
-      pastXvalue = location.getXpos();
-      nowXvalue = location.getXpos();
-    }
-
-    else{
-      if((abs(location.getXpos()-pastXvalue)) >= errorvalue){
-        nowXvalue = pastXvalue;
-        svalue = 0.25f;
-      }
-      else{
-        nowXvalue = location.getXpos();
-        pastXvalue = location.getXpos();
-        svalue = 0.4f;
-      }
-    }
-  }
-  if (location.getYpos() != 0){
-    if (pastYvalue == 0){
-      pastYvalue = location.getYpos();
-      nowYvalue = location.getYpos();
-    }
-    else{
-      if((abs(location.getYpos()-pastYvalue)) >= errorvalue){
-        nowYvalue = pastYvalue;
-        svalue = 0.25f;
-      }
-      else{
-        nowYvalue = location.getYpos();
-        pastYvalue = location.getYpos();
-        svalue = 0.4f;
-      }
-    }
-  }
-  /*Filter End*/
-  nowvector = coursevector.getDistanceFromCourse(nowXvalue, nowYvalue);
-  //nowvector = coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos());
+  nowvector = coursevector.getDistanceFromCourse(filterx.simplefilter(location.getXpos()), filtery.simplefilter(location.getYpos()));
   /*moving action*/
+
+/*
   if (nowXvalue != 0){
     //steering.setDirection((-0.7*(float(nowvector))/2500.0f));
     Kp_v = Kp * float(nowvector);
@@ -159,20 +119,17 @@ void controlVehicle(void){
     dc.setSpeed(svalue);
     }
   }
-
+  */
 
   #ifdef DEBUG_MSG_ON
-
   Serial.print("x : ");
+  Serial.print(filterx.simplefilter(location.getXpos()));
   //Serial.print(location.getXpos());
-  Serial.print(nowXvalue);
   Serial.print("\t");
   Serial.print("y :");
+  Serial.print(filtery.simplefilter(location.getYpos()));
   //Serial.print(location.getYpos());
-  Serial.print(nowYvalue);
   Serial.print("\t");
-  //Serial.print(coursevector.getDistanceFromCourse(location.getXpos(), location.getYpos()));
-  //Serial.print(coursevector.getDistanceFromCourse(nowXvalue, nowYvalue));
   Serial.print(nowvector);
   Serial.print("\n");
   Serial.print(coursevector.sector);
