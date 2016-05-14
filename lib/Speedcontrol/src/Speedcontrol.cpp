@@ -25,6 +25,16 @@ void Speedcontrol::setSpeedcontrol(float basics, float linear, float curve, floa
 }
 float Speedcontrol::getSpeedcontrol(int sec, int cours, int cmax) {
   if((this->basicspeed * this->curve) / (1.0f - abs(float(cours/cmax))) <= this->basicspeed){
+    if(sec == 1 || sec == 7 || sec == 3 || sec == 9){
+      return (this->basicspeed * this->curve);// * abs((1.0f - abs(float(cours/cmax))));
+    }
+    else if(sec == 2 || sec == 8){
+      return (this->basicspeed * this->slinear) * (1.0f - abs(float(cours/cmax)));
+    }
+    else{
+      return (this->basicspeed * this->linear) * (1.0f - abs(float(cours/cmax)));
+    }
+  /*
   switch (sec) {
     case 1:
       return (this->basicspeed * this->curve) * (1.0f - abs(float(cours/cmax)));
@@ -45,6 +55,7 @@ float Speedcontrol::getSpeedcontrol(int sec, int cours, int cmax) {
     case 9:
       return (this->basicspeed * this->curve) * (1.0f - abs(float(cours/cmax)));
   }
+  */
 }
 else{
   return 0.3f;

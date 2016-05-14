@@ -8,5 +8,5 @@ public:
   int simpleerror;
   int simplepast;
 private:
-
+	int count;
 };

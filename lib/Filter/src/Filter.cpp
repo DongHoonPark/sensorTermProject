@@ -12,6 +12,7 @@ Filter::~Filter()
 void Filter::setsimplefiltererror(int e) {
   this->simpleerror = e;
   this->simplepast = 0;
+  this->count = 0;
 }
 int Filter::simplefilter(int x) {
   if (x != 0){
@@ -21,7 +22,15 @@ int Filter::simplefilter(int x) {
       }
       else{
         if((abs(x-this->simplepast)) >= this->simpleerror){
-          return this->simplepast;
+          if (this->count < 3){
+            this->count += 1;
+            return this->simplepast;
+          }
+          else{
+            this->simplepast = x;
+            this->count = 0;
+            return x;
+          }
         }
         else{
           this->simplepast = x;

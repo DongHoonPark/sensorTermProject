@@ -22,7 +22,7 @@ Location location = Location();
 Motor dc = Motor(3,2);
 EulerAngle ea = EulerAngle();
 
-CourseVector coursevector = CourseVector(11000,21000,16200,77700,5000); //new course
+CourseVector coursevector = CourseVector(11000,21000,16200,77700,6000); //new course
 Filter filterx = Filter();
 Filter filtery = Filter();
 PIDS pid = PIDS();
@@ -38,21 +38,26 @@ float scaleAccel = (2.0f * 9.8f) / 32768.0f;
 int course_v;
 float speed_v;
 float sec_v;
+int sect_v;
+int lx;
+int ly;
+int count;
 
 void gyroSensing(void);
 void controlVehicle(void);
 
 void setup(){
   //setting value
-  filterx.setsimplefiltererror(5000);
-  filtery.setsimplefiltererror(5000);
-  pid.setPIDS(0.55f, 0.1f, 0.02f, 300.0f, 2500.0f);
-  spc.setSpeedcontrol(0.4f, 1.0f, 0.6f, 0.7f); //basic 0.4f
+  filterx.setsimplefiltererror(8000);
+  filtery.setsimplefiltererror(8000);
+  pid.setPIDS(0.55f, 0.1f, 0.02f, 300.0f, 2200.0f);
+  spc.setSpeedcontrol(0.4f, 0.9f, 0.65f, 0.65f); //basic 0.4f
   //Serial set
   Serial.begin(115200);
   Serial3.begin(115200);
   steering.attach(8);
 
+  count = 0;
 //  accelgyro.initialize();
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -93,27 +98,36 @@ void controlVehicle(void){
 
   location.update();
   /* and there will be more control code*/
-  course_v = coursevector.getDistanceFromCourse(filterx.simplefilter(location.getXpos()), filtery.simplefilter(location.getYpos()));
-  sec_v = spc.getSpeedcontrol(coursevector.sector, course_v, 8000);
+  if(location.getXpos() != 0){
+     lx = filterx.simplefilter(location.getXpos());
+     ly = filtery.simplefilter(location.getYpos());
+  course_v = coursevector.getDistanceFromCourse(lx, ly);
+  sect_v = coursevector.sector;
+  sec_v = spc.getSpeedcontrol(sect_v, course_v, 7000);
   /*moving action*/
   steering.setDirection(pid.getPIDS(course_v));
-  if(location.getXpos() != 0){
-  //spc.getSpeedcontrol(coursevector.sector, int cours, int cmax)
+
+  //spc.getSpeedcontrol(sect_v, int cours, int cmax);
+  if(location.getXpos() != lx || location.getYpos() != ly || sec_v < 0){
+      dc.setSpeed(0.2f);
+  }
+  else{
   dc.setSpeed(sec_v); //basic 8000
+  }
   }
 
   #ifdef DEBUG_MSG_ON
   Serial.print("x : ");
-  Serial.print(filterx.simplefilter(location.getXpos()));
+  Serial.print(lx);
   //Serial.print(location.getXpos());
   Serial.print("\t");
   Serial.print("y :");
-  Serial.print(filtery.simplefilter(location.getYpos()));
+  Serial.print(ly);
   //Serial.print(location.getYpos());
   Serial.print("\t");
-  Serial.print(coursevector.getDistanceFromCourse(filterx.simplefilter(location.getXpos()), filtery.simplefilter(location.getYpos())));
+  Serial.print(course_v);
   Serial.print("\t");
-  Serial.print(coursevector.sector);
+  Serial.print(sect_v);
   Serial.print("\n");
 
   #endif
