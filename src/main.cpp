@@ -25,6 +25,9 @@ EulerAngle ea = EulerAngle();
 CourseVector coursevector = CourseVector(11000,21000,16200,77700,6000); //new course
 Filter filterx = Filter();
 Filter filtery = Filter();
+Filter kalx = Filter();
+Filter kaly = Filter();
+
 PIDS pid = PIDS();
 Speedcontrol spc = Speedcontrol();
 
@@ -50,8 +53,13 @@ void setup(){
   //setting value
   filterx.setsimplefiltererror(8000);
   filtery.setsimplefiltererror(8000);
+
+  kalx.setkalman(0.0625f, 4.0f, 0.47f);
+  kaly.setkalman(0.0625f, 4.0f, 0.47f);
+
   pid.setPIDS(0.55f, 0.1f, 0.02f, 300.0f, 2200.0f);
   spc.setSpeedcontrol(0.4f, 0.9f, 0.65f, 0.65f); //basic 0.4f
+
   //Serial set
   Serial.begin(115200);
   Serial3.begin(115200);
@@ -101,6 +109,9 @@ void controlVehicle(void){
   if(location.getXpos() != 0){
      lx = filterx.simplefilter(location.getXpos());
      ly = filtery.simplefilter(location.getYpos());
+     //lx = kalx.kalman(location.getXpos());
+     //ly = kaly.kalman(location.getYpos());
+
   course_v = coursevector.getDistanceFromCourse(lx, ly);
   sect_v = coursevector.sector;
   sec_v = spc.getSpeedcontrol(sect_v, course_v, 7000);
